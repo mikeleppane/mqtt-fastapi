@@ -11,3 +11,19 @@ services:
     environment:
       - ENVIRONMENT=dev
       - TESTING=0
+      - DATABASE_URL=postgres://postgres:postgres@web-db:5432/backend
+      - DATABASE_TEST_URL=postgres://postgres:postgres@web-db:5432/backend_test
+    depends_on:
+      - db
+
+  db:
+    build:
+      context: ./src/db
+      dockerfile: Dockerfile
+    ports:
+      - "5454:5432"
+    expose:
+      - 5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres

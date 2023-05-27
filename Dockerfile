@@ -24,6 +24,13 @@ COPY pyproject.toml .
 RUN poetry config virtualenvs.create false
 RUN poetry install --no-root
 
+COPY ./src .
+COPY ./Makefile .
+COPY ./entrypoint.sh .
+
+RUN chmod 755 /app/entrypoint.sh
+
 USER appuser
 
-COPY ./src Makefile ./
+# run entrypoint.sh
+ENTRYPOINT ["/app/entrypoint.sh"]
