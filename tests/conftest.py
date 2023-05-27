@@ -1,9 +1,10 @@
 import os
 
 import pytest
-from app.config import get_settings, Settings
-from app.main import create_application  # updated
 from starlette.testclient import TestClient
+
+from mqtt_fastapi.config import get_settings, Settings
+from src import main
 
 
 def get_settings_override():
@@ -12,12 +13,6 @@ def get_settings_override():
 
 @pytest.fixture(scope="module")
 def test_app():
-    # set up
-    app = create_application()  # new
-    app.dependency_overrides[get_settings] = get_settings_override
-    with TestClient(app) as test_client:  # updated
-
-        # testing
+    main.app.dependency_overrides[get_settings] = get_settings_override
+    with TestClient(main.app) as test_client:
         yield test_client
-
-    # tear down
