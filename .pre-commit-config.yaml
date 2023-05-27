@@ -1,0 +1,10 @@
+repos:
+  - repo: local
+    hooks:
+      - id: code-quality-check
+        name: code-quality-check
+        entry: bash -c 'make check'
+        language: system
+        types: [ python ]
+        pass_filenames: false
+        exclude: ^tests/
