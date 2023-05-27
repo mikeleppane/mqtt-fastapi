@@ -4,12 +4,11 @@ from functools import lru_cache
 from loguru import logger
 from pydantic import BaseSettings
 
-config = {
-    "handlers": [
-        {"sink": sys.stdout, "format": "{time} - {message}"},
-    ],
-}
-logger.configure(**config)
+handlers = [
+    {"sink": sys.stdout, "format": "{time} - {message}"},
+]
+
+logger.configure(handlers=handlers)
 
 
 class Settings(BaseSettings):

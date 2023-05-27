@@ -1,6 +1,6 @@
-env
 .dockerignore
 Dockerfile
+docker-compose.yml
 .mypy_cache/
 .ruff_cache/
 .idea/
