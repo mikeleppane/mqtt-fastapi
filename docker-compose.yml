@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./
+    command: bash -c "make run"
+    volumes:
+      - ./:/app
+    ports:
+      - "8800:8800"
+    environment:
+      - ENVIRONMENT=dev
+      - TESTING=0

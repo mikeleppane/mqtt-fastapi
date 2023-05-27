@@ -4,7 +4,7 @@ version = "0.1.0"
 description = ""
 authors = ["Mikko Leppänen <mikko.leppanen@mleppan23.com>"]
 readme = "README.md"
-packages = [{include = "mqtt_fastapi", from = "src"}]
+#packages = [{include = "mqtt_fastapi", from = "src"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -42,7 +42,7 @@ exclude = [
     ".mypy_cache",
     ".ruff_cache",
 ]
-per-file-ignores = {}
+per-file-ignores = { }
 
 # Same as Black.
 line-length = 88

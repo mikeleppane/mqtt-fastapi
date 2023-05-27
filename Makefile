@@ -1,9 +1,8 @@
 MAIN_FILE = ./src/main.py
 SRC_DIR = ./src/mqtt_fastapi
 
-.PHONY: check test fix schema run migrate
+.PHONY: check fix schema run
 
-check: export PIPENV_VERBOSITY=-1
 check:
 	poetry run mypy --version
 	poetry run mypy $(MAIN_FILE) $(SRC_DIR)
@@ -21,4 +20,4 @@ fix:
 
 
 run:
-	poetry run uvicorn main:app --reload --reload-exclude test*.* --port 8800 --host 0.0.0.0
+	poetry run uvicorn src.main:app --reload --reload-exclude test*.* --port 8900 --host 0.0.0.0
