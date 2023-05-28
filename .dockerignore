@@ -5,3 +5,4 @@ docker-compose.yml
 .ruff_cache/
 .idea/
 README.md
+mosquitto

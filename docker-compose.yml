@@ -16,25 +16,48 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      mosquitto:
+        condition: service_started
     healthcheck:
       test: curl --fail backend:8800/health_check || exit 1
-      interval: 10s
+      start_period: 15s
+      interval: 60s
       timeout: 5s
-      retries: 5
+      retries: 3
 
   db:
     build:
       context: ./src/db
       dockerfile: Dockerfile
+    restart: on-failure
+    volumes:
+      - mqtt_fastapi_postgres_data:/var/lib/postgresql/data/
     ports:
       - "5454:5432"
     expose:
-      - 5432
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - 5454
+    env_file:
+      - .env
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready" ]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 3
+
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    container_name: mosquitto
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+      - ./mosquitto/data:/mosquitto/data:rw
+      - ./mosquitto/log:/mosquitto/log:rw
+    healthcheck:
+      test: [ "CMD-SHELL", "timeout 5 mosquitto_sub -t '$$SYS/#' -C 1 | grep -v Error || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  mqtt_fastapi_postgres_data:

@@ -20,4 +20,4 @@ fix:
 
 
 run:
-	poetry run uvicorn src.main:app --reload --reload-exclude test*.* --port 8800 --host 0.0.0.0
+	poetry run uvicorn src.main:app --reload --reload-exclude tests --port $${BACKEND_PORT:-8800} --host 0.0.0.0
