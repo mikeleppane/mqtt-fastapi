@@ -4,7 +4,7 @@ from typing import Any
 import asyncio_mqtt as aiomqtt
 from loguru import logger
 
-from src.database.services.message_service import save, get_all
+from src.database.services.message_service import save
 from src.models.message import MQTTMessage
 from src.util.deserialize import deserialize
 
@@ -23,10 +23,8 @@ async def handle_incoming_message(message: Any) -> None:
         mqtt_message.dump()
         await save(message=mqtt_message)
 
-        print(await get_all())
 
-
-async def listen(client: aiomqtt.Client):
+async def listen(client: aiomqtt.Client) -> None:
     while True:
         try:
             async with client as mqtt_client:

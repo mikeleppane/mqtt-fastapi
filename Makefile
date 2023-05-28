@@ -1,22 +1,21 @@
-MAIN_FILE = ./src/main.py
-SRC_DIR = ./src/mqtt_fastapi
+SRC_DIR = ./src/
 
 .PHONY: check fix schema run
 
 check:
 	poetry run mypy --version
-	poetry run mypy $(MAIN_FILE) $(SRC_DIR)
+	poetry run mypy $(SRC_DIR)
 	poetry run black --version
-	poetry run black --check --line-length=100 $(MAIN_FILE) $(SRC_DIR)
+	poetry run black --check --line-length=100 $(SRC_DIR)
 	poetry run isort --version
-	poetry run isort --check-only $(MAIN_FILE) $(SRC_DIR)
+	poetry run isort --check-only $(SRC_DIR)
 	poetry run ruff --version
-	poetry run ruff check $(MAIN_FILE) $(SRC_DIR)
+	poetry run ruff check $(SRC_DIR)
 
 fix:
 	poetry run black --line-length=100 $(SRC_DIR)
-	poetry run isort $(MAIN_FILE) $(SRC_DIR)
-	poetry run ruff check --fix $(MAIN_FILE) $(SRC_DIR)
+	poetry run isort $(SRC_DIR)
+	poetry run ruff check --fix $(SRC_DIR)
 
 
 run:
