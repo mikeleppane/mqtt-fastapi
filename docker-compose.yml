@@ -11,8 +11,8 @@ services:
     environment:
       - ENVIRONMENT=dev
       - TESTING=0
-      - DATABASE_URL=postgres://postgres:postgres@web-db:5432/backend
-      - DATABASE_TEST_URL=postgres://postgres:postgres@web-db:5432/backend_test
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/backend_dev
+      - DATABASE_TEST_URL=postgres://postgres:postgres@db:5432/backend_test
     depends_on:
       db:
         condition: service_healthy
@@ -27,7 +27,7 @@ services:
 
   db:
     build:
-      context: ./src/db
+      context: ./src/database
       dockerfile: Dockerfile
     restart: on-failure
     volumes:

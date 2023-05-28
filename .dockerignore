@@ -3,6 +3,8 @@ Dockerfile
 docker-compose.yml
 .mypy_cache/
 .ruff_cache/
+.pytest_cache
+.pre-commit-config.yaml
 .idea/
 README.md
 mosquitto

@@ -1,7 +1,12 @@
 import asyncio
+from typing import Any
 
 import asyncio_mqtt as aiomqtt
 from loguru import logger
+
+from src.database.services.message_service import save, get_all
+from src.models.message import MQTTMessage
+from src.util.deserialize import deserialize
 
 MOSQUITTO_HOSTNAME = "mosquitto"
 RECONNECT_INTERVAL_SECS = 5
@@ -12,6 +17,15 @@ def build_mqtt_client(hostname: str = MOSQUITTO_HOSTNAME) -> aiomqtt.Client:
     return aiomqtt.Client(hostname=hostname)
 
 
+async def handle_incoming_message(message: Any) -> None:
+    if payload := deserialize(message.payload):
+        mqtt_message = MQTTMessage.from_payload(payload)
+        mqtt_message.dump()
+        await save(message=mqtt_message)
+
+        print(await get_all())
+
+
 async def listen(client: aiomqtt.Client):
     while True:
         try:
@@ -20,7 +34,7 @@ async def listen(client: aiomqtt.Client):
                     await mqtt_client.subscribe("#")
                     async for message in messages:
                         if message.topic.matches(TOPIC):
-                            logger.info(f"[{TOPIC}] {message.payload}")
+                            await handle_incoming_message(message)
         except aiomqtt.MqttError as error:
             logger.error(f'Error "{error}". Reconnecting in {RECONNECT_INTERVAL_SECS} seconds.')
             await asyncio.sleep(RECONNECT_INTERVAL_SECS)
