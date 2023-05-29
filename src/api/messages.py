@@ -7,5 +7,5 @@ router = APIRouter()
 
 
 @router.get("/", response_model=list[MQTTMessage])
-async def read_all_messages() -> list[MQTTMessage]:
-    return await get_all()
+async def read_all_messages(limit: int = 100) -> list[MQTTMessage]:
+    return await get_all(limit=limit)
