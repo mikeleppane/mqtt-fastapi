@@ -22,6 +22,11 @@ def test_deserialize_should_not_work_if_payload_is_not_valid_json() -> None:
 
     assert payload_deser is None
 
+    payload = b''
+    payload_deser = deserialize(payload)
+
+    assert payload_deser is None
+
 
 def test_deserialize_should_work_for_empty_payload() -> None:
     payload = b'{}'

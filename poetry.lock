@@ -681,6 +681,21 @@ pluggy = ">=0.12,<2.0"
 testing = ["argcomplete", "attrs (>=19.2.0)", "hypothesis (>=3.56)", "mock", "nose", "pygments (>=2.7.2)", "requests", "xmlschema"]
 
 [[package]]
+name = "pytest-anyio"
+version = "0.0.0"
+description = "The pytest anyio plugin is built into anyio. You don't need this package."
+optional = false
+python-versions = "*"
+files = [
+    {file = "pytest-anyio-0.0.0.tar.gz", hash = "sha256:b41234e9e9ad7ea1dbfefcc1d6891b23d5ef7c9f07ccf804c13a9cc338571fd3"},
+    {file = "pytest_anyio-0.0.0-py2.py3-none-any.whl", hash = "sha256:dc8b5c4741cb16ff90be37fddd585ca943ed12bbeb563de7ace6cd94441d8746"},
+]
+
+[package.dependencies]
+anyio = "*"
+pytest = "*"
+
+[[package]]
 name = "pytest-asyncio"
 version = "0.21.0"
 description = "Pytest support for asyncio"
@@ -951,4 +966,4 @@ dev = ["black (>=19.3b0)", "pytest (>=4.6.2)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "ca8714d010edf88bde971d8ddda7d0481f26995f6bb7b74d1f45a342ed3e77d6"
+content-hash = "0c0711b8ba770c97432c53fa23df23d350878c29dd8f8a72d379cdd53a4c0bdf"

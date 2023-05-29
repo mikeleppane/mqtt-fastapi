@@ -12,7 +12,16 @@ class MQTTMessage(BaseModel):
 
     @classmethod
     def from_payload(cls, payload: Any) -> Self:
+        """
+
+        :param payload:
+        :return: MQTTMessage instance
+        """
         return cls(created_at=datetime.now().isoformat(), payload=payload)
 
     def dump(self) -> None:
+        """
+        asd
+        :return:
+        """
         logger.info(json.dumps(self.dict(), sort_keys=True, indent=4))

@@ -12,8 +12,7 @@ from src.util.task_manager import TaskManager
 def create_application() -> FastAPI:
     application = FastAPI(title="MQTT - FastAPI", version="0.1.0")
     application.include_router(health_check.router)
-    application.include_router(messages.router, prefix="/messages", tags=["messages"])
-
+    application.include_router(messages.router)
     return application
 
 

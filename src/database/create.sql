@@ -1,2 +1,2 @@
-CREATE DATABASE backend_dev;
+CREATE DATABASE backend;
 CREATE DATABASE backend_test;
