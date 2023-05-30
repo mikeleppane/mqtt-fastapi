@@ -1,4 +1,5 @@
 import asyncio
+import os
 from datetime import datetime, timedelta
 from typing import Any
 from unittest.mock import patch
@@ -46,7 +47,7 @@ async def test_read_messages_with_one_message_in_db(test_app_with_db, get_mqtt_c
     THEN response with status 200 and response length is 1
     """
 
-    await publish_message(get_mqtt_client, 55, "humidity/outside")
+    await publish_message(get_mqtt_client, 55, os.environ["TOPIC"])
     await wait_for_db_sync(1)
 
     response = await test_app_with_db.get("/messages")
@@ -63,8 +64,8 @@ async def test_read_messages_with_two_messages_in_db(test_app_with_db, get_mqtt_
     THEN response with status 200 and response length is 2
     """
 
-    await publish_message(get_mqtt_client, 55, "humidity/outside")
-    await publish_message(get_mqtt_client, '{"hum": 0.66}', "humidity/outside")
+    await publish_message(get_mqtt_client, 55, os.environ["TOPIC"])
+    await publish_message(get_mqtt_client, '{"hum": 0.66}', os.environ["TOPIC"])
     await wait_for_db_sync(2)
 
     response = await test_app_with_db.get("/messages")
@@ -81,8 +82,8 @@ async def test_read_messages_with_limit(test_app_with_db, get_mqtt_client):
     THEN response with status 200 and response length is 1
     """
 
-    await publish_message(get_mqtt_client, 55, "humidity/outside")
-    await publish_message(get_mqtt_client, 65, "humidity/outside")
+    await publish_message(get_mqtt_client, 55, os.environ["TOPIC"])
+    await publish_message(get_mqtt_client, 65, os.environ["TOPIC"])
     await wait_for_db_sync(2)
 
     response = await test_app_with_db.get("/messages?limit=1")
@@ -99,8 +100,8 @@ async def test_read_messages_should_return_messages_in_correct_order(test_app_wi
     THEN response with status 200, response length is 2 and payload order is descending by timestamp
     """
 
-    await publish_message(get_mqtt_client, 55, "humidity/outside")
-    await publish_message(get_mqtt_client, 65, "humidity/outside")
+    await publish_message(get_mqtt_client, 55, os.environ["TOPIC"])
+    await publish_message(get_mqtt_client, 65, os.environ["TOPIC"])
     await wait_for_db_sync(2)
 
     response = await test_app_with_db.get("/messages")
@@ -145,7 +146,7 @@ async def test_read_messages_should_return_empty_if_published_message_is_not_val
     THEN message is not stored to db and messages endpoint returns empty
     """
 
-    await publish_message(get_mqtt_client, '\\', "humidity/outside")
+    await publish_message(get_mqtt_client, '\\', os.environ["TOPIC"])
 
     with pytest.raises(AssertionError):
         await wait_for_db_sync(1, 0.5)

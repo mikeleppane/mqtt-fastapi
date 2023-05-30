@@ -18,7 +18,7 @@ def build_mqtt_client(hostname: str = MOSQUITTO_HOSTNAME) -> aiomqtt.Client:
 
 
 def get_topic() -> str:
-    return os.environ.get("TOPIC") or "humidity/outside"
+    return os.environ.get("TOPIC") or ""
 
 
 async def handle_incoming_message(message: Any) -> None:

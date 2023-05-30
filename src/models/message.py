@@ -13,15 +13,15 @@ class MQTTMessage(BaseModel):
     @classmethod
     def from_payload(cls, payload: Any) -> Self:
         """
-
-        :param payload:
+        Creates MQTTMessage class from the given payload
+        :param payload: Any
         :return: MQTTMessage instance
         """
         return cls(created_at=datetime.now().isoformat(), payload=payload)
 
     def dump(self) -> None:
         """
-        asd
+        Prints the content of the class using pretty formatting
         :return:
         """
         logger.info(json.dumps(self.dict(), sort_keys=True, indent=4))

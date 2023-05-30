@@ -20,7 +20,7 @@ services:
         condition: service_healthy
     healthcheck:
       test: curl --fail backend:8800/health_check || exit 1
-      interval: 60s
+      interval: 30s
       retries: 5
       start_period: 20s
       timeout: 5s
@@ -40,7 +40,7 @@ services:
       - .env
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready" ]
-      interval: 60s
+      interval: 30s
       retries: 5
       start_period: 10s
       timeout: 5s
@@ -57,7 +57,7 @@ services:
       - ./mosquitto/log:/mosquitto/log:rw
     healthcheck:
       test: [ "CMD-SHELL", "timeout 5 mosquitto_sub -t '$$SYS/#' -C 1 | grep -v Error || exit 1" ]
-      interval: 60s
+      interval: 30s
       retries: 5
       start_period: 10s
       timeout: 5s
