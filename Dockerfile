@@ -7,8 +7,7 @@ WORKDIR /app
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-
-RUN adduser --group --system appuser
+ENV PATH="${PATH}:/root/.local/bin"
 
 # install system dependencies
 RUN set -eux; \
@@ -16,19 +15,16 @@ RUN set -eux; \
     apt-get install --no-install-recommends netcat curl gcc make -y; \
     apt-get clean; \
     pip install --upgrade pip; \
-    pip3 install poetry
+    curl -sSL https://install.python-poetry.org | python3 -
 
 COPY poetry.lock .
 COPY pyproject.toml .
 
-RUN poetry config virtualenvs.create false
 RUN poetry install --no-root
 
 COPY . .
 
 RUN chmod 755 /app/entrypoint.sh
-
-USER appuser
 
 # run entrypoint.sh
 ENTRYPOINT ["/app/entrypoint.sh"]

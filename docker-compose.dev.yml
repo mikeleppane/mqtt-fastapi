@@ -4,6 +4,7 @@ services:
   backend:
     build: ./
     command: bash -c "make run"
+    user: root
     volumes:
       - ./:/app
     ports:

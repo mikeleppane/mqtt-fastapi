@@ -5,3 +5,4 @@ mosquitto/data
 mosquitto/log
 .idea/
 .env
+.coverage

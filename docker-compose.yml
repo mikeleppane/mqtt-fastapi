@@ -2,15 +2,12 @@ version: '3.8'
 
 services:
   backend:
-    build: ./
-    command: bash -c "make run"
-    volumes:
-      - ./:/app
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
     ports:
       - "8800:8800"
     environment:
-      - ENVIRONMENT=prod
-      - TESTING=0
       - DATABASE_URL=postgres://postgres:postgres@db:5432/backend
       - TOPIC=humidity/outside
     depends_on:
@@ -31,7 +28,7 @@ services:
       context: ./src/database
       dockerfile: Dockerfile
     volumes:
-      - mqtt_fastapi_postgres_data:/var/lib/postgresql/data/
+      - mqtt_fastapi_postgres_data_prod:/var/lib/postgresql/data/
     ports:
       - "5454:5432"
     expose:
@@ -64,4 +61,4 @@ services:
     restart: unless-stopped
 
 volumes:
-  mqtt_fastapi_postgres_data:
+  mqtt_fastapi_postgres_data_prod:

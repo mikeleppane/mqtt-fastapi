@@ -8,3 +8,4 @@ docker-compose.yml
 .idea/
 README.md
 mosquitto
+.coverage
