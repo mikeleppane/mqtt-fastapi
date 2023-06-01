@@ -1,5 +1,5 @@
 # pull official base image
-FROM python:3.11.3-slim-buster
+FROM python:3.11.3-slim-bullseye
 
 # create directory for the app user
 RUN mkdir -p /home/app
@@ -22,23 +22,26 @@ ENV TESTING 0
 
 # install system dependencies
 RUN set -eux; \
+    export DEBIAN_FRONTEND=noninteractive; \
     apt-get update; \
-    apt-get install --no-install-recommends netcat curl gcc make -y; \
+    apt-get -y upgrade; \
+    apt-get install --no-install-recommends curl gcc make -y; \
     apt-get clean; \
+    rm -rf /var/lib/apt/lists/*; \
     pip install --upgrade pip; \
     curl -sSL https://install.python-poetry.org | python3 -
 
 COPY poetry.lock .
 COPY pyproject.toml .
 
-RUN poetry install --no-root --without=dev
+RUN poetry install --no-root --without dev
 
-COPY . .
+#COPY . .
 
 # chown all the files to the app user
-RUN chown -R app:app $APP_HOME
+COPY --chown=app . $APP_HOME
 
 # change to the app user
 USER app
 
-CMD poetry run gunicorn --bind 0.0.0.0:8800 src.main:app -k uvicorn.workers.UvicornWorker
+CMD ["poetry", "run", "gunicorn", "--bind", "0.0.0.0:8800", "src.main:app", "-k", "uvicorn.workers.UvicornWorker"]

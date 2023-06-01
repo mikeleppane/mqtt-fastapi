@@ -1,11 +1,13 @@
 .dockerignore
 Dockerfile
+Dockerfile.prod
 docker-compose.yml
+docker-compose.dev.yml
 .mypy_cache/
 .ruff_cache/
 .pytest_cache
 .pre-commit-config.yaml
 .idea/
 README.md
-mosquitto
 .coverage
+.env
