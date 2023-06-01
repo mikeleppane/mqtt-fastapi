@@ -28,14 +28,14 @@ async def handle_incoming_message(message: Any) -> None:
         await save(message=mqtt_message)
 
 
-async def listen(client: aiomqtt.Client) -> None:
+async def listen(client: aiomqtt.Client, topic: str) -> None:
     while True:
         try:
             async with client as mqtt_client:
                 async with mqtt_client.messages() as messages:
                     await mqtt_client.subscribe("#")
                     async for message in messages:
-                        if message.topic.matches(get_topic()):
+                        if message.topic.matches(topic):
                             await handle_incoming_message(message)
         except aiomqtt.MqttError as error:
             logger.error(f'Error "{error}". Reconnecting in {RECONNECT_INTERVAL_SECS} seconds.')
@@ -44,4 +44,4 @@ async def listen(client: aiomqtt.Client) -> None:
 
 async def create_mqtt_service() -> asyncio.Task:
     async with asyncio.TaskGroup() as tg:
-        return tg.create_task(listen(build_mqtt_client("mosquitto")))
+        return tg.create_task(listen(build_mqtt_client("mosquitto"), get_topic()))
