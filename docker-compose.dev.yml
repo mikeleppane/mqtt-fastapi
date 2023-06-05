@@ -12,14 +12,15 @@ services:
       - ENVIRONMENT=dev
       - TESTING=1
       - DATABASE_URL=postgres://postgres:postgres@db:5432/backend_test
-      - TOPIC=temperature/outside
+      - BACKEND_PORT=8800
+      - TOPIC=humidity/outside
     depends_on:
       db:
         condition: service_healthy
       mosquitto:
         condition: service_healthy
     healthcheck:
-      test: curl --fail backend:8800/health_check || exit 1
+      test: curl --fail backend:8800/v1/health_check || exit 1
       interval: 30s
       retries: 5
       start_period: 20s
@@ -36,8 +37,9 @@ services:
       - "5454:5432"
     expose:
       - 5454
-    env_file:
-      - .env
+    environment:
+      - PGUSER=postgres
+      - POSTGRES_PASSWORD=postgres
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready" ]
       interval: 30s
@@ -53,8 +55,8 @@ services:
       - "1883:1883"
     volumes:
       - ./mosquitto/config:/mosquitto/config
-      - ./mosquitto/data:/mosquitto/data:rw
-      - ./mosquitto/log:/mosquitto/log:rw
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
     healthcheck:
       test: [ "CMD-SHELL", "timeout 5 mosquitto_sub -t '$$SYS/#' -C 1 | grep -v Error || exit 1" ]
       interval: 30s

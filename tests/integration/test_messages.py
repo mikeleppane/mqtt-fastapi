@@ -34,7 +34,7 @@ async def test_read_messages_with_empty_db(test_app_with_db):
     WHEN health check endpoint is called with GET method
     THEN response with status 200 and body OK is returned
     """
-    response = await test_app_with_db.get("/messages")
+    response = await test_app_with_db.get("/v1/messages")
     assert response.status_code == status.HTTP_200_OK
     assert len(response.json()) == 0
 
@@ -50,7 +50,7 @@ async def test_read_messages_with_one_message_in_db(test_app_with_db, get_mqtt_c
     await publish_message(get_mqtt_client, 55, os.environ["TOPIC"])
     await wait_for_db_sync(1)
 
-    response = await test_app_with_db.get("/messages")
+    response = await test_app_with_db.get("/v1/messages")
 
     assert response.status_code == status.HTTP_200_OK
     assert len(response.json()) == 1
@@ -68,7 +68,7 @@ async def test_read_messages_with_two_messages_in_db(test_app_with_db, get_mqtt_
     await publish_message(get_mqtt_client, '{"hum": 0.66}', os.environ["TOPIC"])
     await wait_for_db_sync(2)
 
-    response = await test_app_with_db.get("/messages")
+    response = await test_app_with_db.get("/v1/messages")
 
     assert response.status_code == status.HTTP_200_OK
     assert len(response.json()) == 2
@@ -86,7 +86,7 @@ async def test_read_messages_with_limit(test_app_with_db, get_mqtt_client):
     await publish_message(get_mqtt_client, 65, os.environ["TOPIC"])
     await wait_for_db_sync(2)
 
-    response = await test_app_with_db.get("/messages?limit=1")
+    response = await test_app_with_db.get("/v1/messages?limit=1")
 
     assert response.status_code == status.HTTP_200_OK
     assert len(response.json()) == 1
@@ -104,7 +104,7 @@ async def test_read_messages_should_return_messages_in_correct_order(test_app_wi
     await publish_message(get_mqtt_client, 65, os.environ["TOPIC"])
     await wait_for_db_sync(2)
 
-    response = await test_app_with_db.get("/messages")
+    response = await test_app_with_db.get("/v1/messages")
 
     assert response.status_code == status.HTTP_200_OK
     assert len(response.json()) == 2
@@ -119,7 +119,7 @@ async def test_read_messages_should_return_400_error_if_limit_is_not_positive(te
     THEN response with status is 400
     """
 
-    response = await test_app_with_db.get("/messages?limit=-1")
+    response = await test_app_with_db.get("/v1/messages?limit=-1")
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
 
@@ -133,7 +133,7 @@ async def test_read_messages_should_return_500_error_if_db_transaction_fails(moc
     THEN response with status is 500
     """
 
-    response = await test_app_with_db.get("/messages")
+    response = await test_app_with_db.get("/v1/messages")
 
     assert response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
 
@@ -151,5 +151,5 @@ async def test_read_messages_should_return_empty_if_published_message_is_not_val
     with pytest.raises(AssertionError):
         await wait_for_db_sync(1, 0.5)
 
-    response = await test_app_with_db.get("/messages")
+    response = await test_app_with_db.get("/v1/messages")
     assert len(response.json()) == 0
