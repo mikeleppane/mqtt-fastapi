@@ -30,6 +30,8 @@ http://0.0.0.0:1883
 By default, the subscription service listens to a topic ***humidity/outside*** but user can
 change this with TOPIC environment variable (see docker-compose.yml file).
 
+You can use e.g. [MQTT X](https://mqttx.app/) to publish a message to a topic on a broker.
+
 ## REST API
 
 ### Health check
