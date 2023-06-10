@@ -1,5 +1,43 @@
+###########
+# BUILDER #
+###########
+
 # pull official base image
-FROM python:3.11.3-slim-bullseye
+FROM python:3.11.3-slim-bullseye as builder
+
+# set work directory
+WORKDIR /app
+
+# set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+ENV PATH="${PATH}:/root/.local/bin"
+
+# install system dependencies
+RUN set -eux; \
+    export DEBIAN_FRONTEND=noninteractive; \
+    apt-get update; \
+    apt-get -y upgrade; \
+    apt-get install --no-install-recommends curl gcc make -y; \
+    apt-get clean; \
+    rm -rf /var/lib/apt/lists/*; \
+    curl -sSL https://install.python-poetry.org | python3 -
+
+COPY poetry.lock .
+COPY pyproject.toml .
+
+# install dependencies
+RUN poetry export --without-hashes --without dev --format=requirements.txt > /app/requirements.txt
+RUN pip install --upgrade pip
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /app/wheels/ -r /app/requirements.txt
+
+
+########
+# FINAL #
+########
+
+# pull official base image
+FROM python:3.11.2-slim-buster
 
 # create directory for the app user
 RUN mkdir -p /home/app
@@ -16,7 +54,6 @@ WORKDIR $APP_HOME
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-ENV PATH="${PATH}:/home/app/.local/bin"
 ENV ENVIRONMENT prod
 ENV TESTING 0
 
@@ -27,22 +64,19 @@ RUN set -eux; \
     apt-get -y upgrade; \
     apt-get install --no-install-recommends curl gcc make -y; \
     apt-get clean; \
-    rm -rf /var/lib/apt/lists/*; \
-    pip install --upgrade pip; \
-    curl -sSL https://install.python-poetry.org | python3 -
+    rm -rf /var/lib/apt/lists/*
 
-COPY poetry.lock .
-COPY pyproject.toml .
-
-RUN poetry install --no-root --without dev
-
-#COPY . .
-
-# chown all the files to the app user
+## install python dependencies
+COPY --from=builder /app/wheels /wheels
+COPY --from=builder /app/requirements.txt .
+RUN pip install --upgrade pip
+RUN pip install --no-cache /wheels/*
+#
+## chown all the files to the app user
 COPY --chown=app . $APP_HOME
 RUN chmod +x $APP_HOME/start.sh
-
-# change to the app user
+#
+## change to the app user
 USER app
-
+#
 CMD ["./start.sh"]
