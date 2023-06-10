@@ -40,8 +40,9 @@ RUN poetry install --no-root --without dev
 
 # chown all the files to the app user
 COPY --chown=app . $APP_HOME
+RUN chmod +x $APP_HOME/start.sh
 
 # change to the app user
 USER app
 
-CMD ["poetry", "run", "gunicorn", "--bind", "0.0.0.0:8800", "src.main:app", "-k", "uvicorn.workers.UvicornWorker"]
+CMD ["./start.sh"]
