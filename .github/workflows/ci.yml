@@ -18,14 +18,11 @@ jobs:
       - name: Run container
         run: |
           docker-compose -f docker-compose.dev.yml up -d --build
-      - name: Sleep for 30 seconds
-        run: sleep 30s
-        shell: bash
       - name: Check code quality
         run: |
-          docker-compose exec backend make check
+          docker-compose exec -T backend make check
       - name: Run tests
         run: |
-          docker-compose exec backend make test
+          docker-compose exec -T backend make test
             
           
