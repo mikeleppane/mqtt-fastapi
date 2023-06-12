@@ -1,0 +1,28 @@
+name: FastAPI/MQTT - Continuous Integration
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+
+jobs:
+  test:
+    name: Build Docker image and run end-to-end tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code from GitHub
+        uses: actions/checkout@v3
+      - name: Run container
+        run: |
+          docker-compose -f docker-compose.dev.yml up -d --build
+      - name: Check code quality
+        run: |
+          docker-compose exec backend make check
+      - name: Run tests
+        run: |
+          docker-compose exec backend make test
+            
+          
