@@ -1,3 +1,5 @@
+[![FastAPI/MQTT - Continuous Integration](https://github.com/mikeleppane/mqtt-fastapi/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/mikeleppane/mqtt-fastapi/actions/workflows/ci.yml)
+
 # FastAPI and MQTT
 
 ## What it is
