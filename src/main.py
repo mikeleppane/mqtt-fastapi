@@ -1,9 +1,11 @@
+import asyncio
+
 from fastapi import FastAPI
 from loguru import logger
 
 from src.api import health_check, messages
 from src.database.db import init_db
-from src.services.mqtt_service import start_mqtt_service
+from src.services.mqtt_service import create_mqtt_service
 from src.util.task_manager import TaskManager
 
 
@@ -16,6 +18,10 @@ def create_application() -> FastAPI:
 
 app = create_application()
 task_manager = TaskManager()
+
+
+async def start_mqtt_service(tm: TaskManager) -> None:
+    tm.add(asyncio.create_task(create_mqtt_service()))
 
 
 @app.on_event("startup")

@@ -44,7 +44,6 @@ async def test_app_with_db():
         modules={'models': ['src.models.tortoise']}
     )
     # Generate the schema
-    await Tortoise.generate_schemas()
     await Message.all().delete()
 
     app.dependency_overrides[get_settings] = get_settings_override
