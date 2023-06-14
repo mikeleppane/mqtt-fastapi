@@ -1,29 +1,21 @@
-from src.util.deserialize import deserialize
+from datetime import datetime
+
+from freezegun import freeze_time
+
+from src.models.message import MQTTMessage
 
 
-def test_deserialize_should_work_with_valid_payload() -> None:
-    payload = b'{"data": 123}'
-    payload_deser = deserialize(payload)
+@freeze_time("2023-06-14T10:25:51")
+def test_mqtt_message_from_payload() -> None:
+    payload = {"humidity/outside": 1.65}
+    message = MQTTMessage.from_payload(payload=payload)
 
-    assert payload_deser == {"data": 123}
-
-
-def test_deserialize_should_return_none_if_payload_is_not_valid_utf8() -> None:
-    payload = b'{"data": \xa0\xa1}'
-    payload_deser = deserialize(payload)
-
-    assert payload_deser is None
+    assert message.created_at == datetime.strptime("2023-06-14T10:25:51", '%Y-%m-%dT%H:%M:%S')
+    assert message.payload == payload
 
 
-def test_deserialize_should_return_none_if_deserialization_fails() -> None:
-    payload = b'\\'
-    payload_deser = deserialize(payload)
+def test_mqtt_message_dump() -> None:
+    payload = {"humidity/outside": 1.65}
+    message = MQTTMessage.from_payload(payload=payload)
 
-    assert payload_deser is None
-
-
-def test_deserialize_should_return_empty_if_payload_is_empty() -> None:
-    payload = b'{}'
-    payload_deser = deserialize(payload)
-
-    assert payload_deser == {}
+    message.dump()

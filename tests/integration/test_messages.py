@@ -54,6 +54,7 @@ async def test_read_messages_with_one_message_in_db(test_app_with_db, get_mqtt_c
 
     assert response.status_code == status.HTTP_200_OK
     assert len(response.json()) == 1
+    assert response.json()[0]["payload"] == 55
 
 
 @pytest.mark.asyncio
@@ -72,6 +73,8 @@ async def test_read_messages_with_two_messages_in_db(test_app_with_db, get_mqtt_
 
     assert response.status_code == status.HTTP_200_OK
     assert len(response.json()) == 2
+    assert response.json()[0]["payload"] == {"hum": 0.66}
+    assert response.json()[1]["payload"] == 55
 
 
 @pytest.mark.asyncio
@@ -108,7 +111,7 @@ async def test_read_messages_should_return_messages_in_correct_order(test_app_wi
 
     assert response.status_code == status.HTTP_200_OK
     assert len(response.json()) == 2
-    assert response.json()[0]["payload"] == '65'
+    assert response.json()[0]["payload"] == 65
 
 
 @pytest.mark.asyncio

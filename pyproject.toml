@@ -32,6 +32,7 @@ pre-commit = "^3.3.2"
 pytest-anyio = "^0.0.0"
 httpx = "^0.24.1"
 pytest-asyncio = "^0.21.0"
+freezegun = "^1.2.2"
 
 
 [tool.aerich]

@@ -6,8 +6,16 @@ from loguru import logger
 from pydantic import BaseModel
 
 
+class DatetimeEncoder(json.JSONEncoder):
+    def default(self, obj: Any) -> str:
+        try:
+            return super().default(obj)
+        except TypeError:
+            return str(obj)
+
+
 class MQTTMessage(BaseModel):
-    created_at: str
+    created_at: datetime
     payload: Any
 
     @classmethod
@@ -24,4 +32,4 @@ class MQTTMessage(BaseModel):
         Prints the content of the class using pretty formatting
         :return:
         """
-        logger.info(json.dumps(self.dict(), sort_keys=True, indent=4))
+        logger.info(json.dumps(self.dict(), sort_keys=True, indent=4, cls=DatetimeEncoder))

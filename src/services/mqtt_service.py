@@ -1,6 +1,6 @@
 import asyncio
 import os
-from typing import Any
+from typing import Any, Protocol
 
 import asyncio_mqtt as aiomqtt
 from loguru import logger
@@ -13,6 +13,10 @@ MOSQUITTO_HOSTNAME = "mosquitto"
 RECONNECT_INTERVAL_SECS = 5
 
 
+class WithPayload(Protocol):
+    payload: Any
+
+
 def build_mqtt_client(hostname: str = MOSQUITTO_HOSTNAME) -> aiomqtt.Client:
     return aiomqtt.Client(hostname=hostname)
 
@@ -21,7 +25,7 @@ def get_topic() -> str:
     return os.environ.get("TOPIC") or ""
 
 
-async def handle_incoming_message(message: Any) -> None:
+async def handle_incoming_message(message: WithPayload) -> None:
     if payload := deserialize(message.payload):
         mqtt_message = MQTTMessage.from_payload(payload)
         mqtt_message.dump()
