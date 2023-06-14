@@ -7,6 +7,7 @@ from tortoise.contrib.fastapi import register_tortoise
 
 
 def init_db(app: FastAPI) -> None:
+    logger.info("Initialing database...")
     register_tortoise(
         app,
         db_url=os.environ.get("DATABASE_URL"),
@@ -14,6 +15,7 @@ def init_db(app: FastAPI) -> None:
         generate_schemas=False,
         add_exception_handlers=True,
     )
+    logger.info("Database initialization done.")
 
 
 TORTOISE_ORM = {

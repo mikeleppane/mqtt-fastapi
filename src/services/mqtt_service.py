@@ -8,6 +8,7 @@ from loguru import logger
 from src.database.services.message_service import save
 from src.models.message import MQTTMessage
 from src.util.deserialize import deserialize
+from src.util.task_manager import TaskManager
 
 MOSQUITTO_HOSTNAME = "mosquitto"
 RECONNECT_INTERVAL_SECS = 5
@@ -49,3 +50,7 @@ async def listen(client: aiomqtt.Client, topic: str) -> None:
 async def create_mqtt_service() -> asyncio.Task:
     async with asyncio.TaskGroup() as tg:
         return tg.create_task(listen(build_mqtt_client("mosquitto"), get_topic()))
+
+
+async def start_mqtt_service(task_manager: TaskManager) -> None:
+    task_manager.add(asyncio.create_task(create_mqtt_service()))
