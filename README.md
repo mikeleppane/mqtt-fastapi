@@ -50,9 +50,16 @@ Response payload:
 }
 ```
 
-### Messges
+### Messages
 
 #### GET /v1/messages
+
+##### Parameters
+
+| Name   | Description                                           |
+|--------|-------------------------------------------------------|
+| limit  | how many messages to return; default value: 100       |
+| offset | define a offset from the first item; default value: 0 |
 
 Get all stored messages ordered by timestamp
 
@@ -62,11 +69,11 @@ Example response payload:
 [
   {
     "created_at": "2023-06-05T10:01:08.587763",
-    "payload": "{\"humidity\": 5.66}"
+    "payload": {"humidity": 5.66}
   },
   {
     "created_at": "2023-06-05T09:59:21.040788",
-    "payload": "{\"humidity\": 0.75}"
+    "payload": {"humidity": 0.75}
   }
 ]
 ```
