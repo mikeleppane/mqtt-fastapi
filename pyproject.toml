@@ -73,6 +73,10 @@ target-version = "py311"
 [tool.ruff.mccabe]
 max-complexity = 10
 
+[tool.ruff.flake8-bugbear]
+extend-immutable-calls = ["fastapi.Depends", "fastapi.params.Depends", "fastapi.Query", "fastapi.params.Query"]
+
+
 [tool.black]
 line-length = 88
 target-version = ['py311']

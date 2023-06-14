@@ -12,12 +12,11 @@ async def save(message: MQTTMessage) -> None:
         logger.error(f"An error occurred while trying to save message to db: {ex}")
 
 
-async def get_all(limit: int | None = None) -> list[MQTTMessage]:
-    if limit:
-        return [
-            MQTTMessage(**message)
-            async for message in Message.all().limit(limit).values("created_at", "payload")
-        ]
+async def get_all(limit: int = 100, offset: int = 0) -> list[MQTTMessage]:
     return [
-        MQTTMessage(**message) async for message in Message.all().values("created_at", "payload")
+        MQTTMessage(**message)
+        async for message in Message.all()
+        .limit(limit)
+        .offset(offset)
+        .values("created_at", "payload")
     ]

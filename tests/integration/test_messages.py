@@ -96,6 +96,27 @@ async def test_read_messages_with_limit(test_app_with_db, get_mqtt_client):
 
 
 @pytest.mark.asyncio
+async def test_read_messages_with_limit_and_offset(test_app_with_db, get_mqtt_client):
+    """
+    GIVEN two messages are published to broker and wait for them to be stored in a db
+    WHEN messages endpoint is called with GET method and query param limit is set to 1
+    THEN response with status 200 and response length is 1
+    """
+
+    await publish_message(get_mqtt_client, 55, os.environ["TOPIC"])
+    await publish_message(get_mqtt_client, 65, os.environ["TOPIC"])
+    await publish_message(get_mqtt_client, 75, os.environ["TOPIC"])
+    await wait_for_db_sync(3)
+
+    response = await test_app_with_db.get("/v1/messages?limit=2&offset=1")
+
+    assert response.status_code == status.HTTP_200_OK
+    assert len(response.json()) == 2
+    assert response.json()[0]["payload"] == 65
+    assert response.json()[1]["payload"] == 55
+
+
+@pytest.mark.asyncio
 async def test_read_messages_should_return_messages_in_correct_order(test_app_with_db, get_mqtt_client):
     """
     GIVEN two messages are published to broker and wait for them to be stored in a db
@@ -115,7 +136,7 @@ async def test_read_messages_should_return_messages_in_correct_order(test_app_wi
 
 
 @pytest.mark.asyncio
-async def test_read_messages_should_return_400_error_if_limit_is_not_positive(test_app_with_db):
+async def test_read_messages_should_return_error_if_limit_is_not_positive(test_app_with_db):
     """
     GIVEN
     WHEN messages endpoint is called with GET method query param limit is set to -1
@@ -124,7 +145,7 @@ async def test_read_messages_should_return_400_error_if_limit_is_not_positive(te
 
     response = await test_app_with_db.get("/v1/messages?limit=-1")
 
-    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
 @pytest.mark.asyncio
