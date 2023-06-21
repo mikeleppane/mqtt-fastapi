@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 from tortoise import fields, models
 
 
@@ -6,4 +8,4 @@ class Message(models.Model):
     payload = fields.JSONField()
 
     class Meta:
-        ordering = ["-created_at"]
+        ordering: ClassVar[list[str]] = ["-created_at"]
